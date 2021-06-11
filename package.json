@@ -1,0 +1,12 @@
+{
+  "name": "jommand",
+  "version": "1.0.0",
+  "description": "Jommand",
+  "main": "jommand.js",
+  "repository": "https://github.com/NamuTree0345/jommand",
+  "author": "TreeKR <johanbag290@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
+}
