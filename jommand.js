@@ -48,10 +48,18 @@ class CommandContext {
         this.args = args
     }
 
+    parseArgument(name) {
+        return this.args.find((item) => {return item.argName === name})
+    }
 
 }
 
 module.exports.Command = class Command {
+    /**
+     * 
+     * @param {String} name 
+     * @param {(msg: Message, ctx: CommandContext) => void} action 
+     */
     constructor(name, action) {
         this.name = name
         this.action = action
@@ -71,12 +79,25 @@ module.exports.Command = class Command {
         if(this.args.length > arr.length) {
             message.channel.send('명령어의 매개 변수가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
         } else {
-            this.action(message, new CommandContext())
+            let failed = false
+            let whatIsFailed = new CommandArgument('none')
+            for(let i = 0; i < arr.length; i++) {
+                failed = !this.args[i].checkValid(arr[i])
+                if(failed) {
+                    whatIsFailed = this.args[i]
+                    break
+                }
+            }
+            if(failed) {
+                message.channel.send('명령어의 매개 변수 `' + whatIsFailed.argName + '`가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
+            } else {
+                this.action(new CommandContext(this.args))
+            }
         }
     }
 }
 
-module.exports.CommandArgument = class CommandArgument {
+class CommandArgument {
 
     constructor(argName) {
         this.argName = argName
@@ -101,6 +122,8 @@ module.exports.CommandArgument = class CommandArgument {
     }
 
 }
+
+module.exports.CommandArgument = CommandArgument
 
 module.exports.BooleanArgument = class BooleanArgument extends this.CommandArgument {
 
