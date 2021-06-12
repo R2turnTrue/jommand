@@ -7,7 +7,7 @@ JS Command Library like discordpy.ext (with Discord.JS)
 ### Example
 ```js
 // Import Jommand
-const { Jommand, Command, BooleanArgument, IntArgument, CommandArgument } = require('../jommand')
+const { Jommand, Command, BooleanArgument, IntArgument, CommandArgument } = require('jommand')
 // Jommand Init
 const jommand = new Jommand('y!' /* prefix */)
 const discord = require('discord.js')
