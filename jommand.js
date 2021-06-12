@@ -44,12 +44,13 @@ module.exports.Jommand = class Jommand {
 }
 
 class CommandContext {
-    constructor(args) {
+    constructor(args, rawArgs) {
         this.args = args
+        this.rawArgs = rawArgs
     }
 
     parseArgument(name) {
-        return this.args.find((item) => {return item.argName === name})
+        return this.args.find((item) => {return item.argName === name}).parseData(this.rawArgs[this.args.findIndex((item) => {return item.argName === name}) + 1])
     }
 
 }
@@ -58,15 +59,14 @@ module.exports.Command = class Command {
     /**
      * 
      * @param {String} name 
-     * @param {(msg: Message, ctx: CommandContext) => void} action 
+     * @param {(msg: Message, ctx: CommandContext) => void} action
+     * @param {Array<CommandArgument>} args
      */
-    constructor(name, action) {
+    constructor(name, action, args) {
         this.name = name
         this.action = action
-        this.args = []
-        for (var i = 2; i < arguments.length; i++) {
-            this.args.push(arguments[i])
-        }
+        this.args = args
+        console.log(args)
     }
 
     /**
@@ -75,14 +75,16 @@ module.exports.Command = class Command {
      */
     execute(message) {
         let arr = message.content.split(' ')
-        arr.slice(1, arr.length)
-        if(this.args.length > arr.length) {
+        if(this.args.length > arr.length - 1) {
             message.channel.send('명령어의 매개 변수가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
         } else {
             let failed = false
             let whatIsFailed = new CommandArgument('none')
             for(let i = 0; i < arr.length; i++) {
-                failed = !this.args[i].checkValid(arr[i])
+                if(arr[i + 1] === undefined || this.args[i] === undefined) {
+                    break
+                }
+                failed = !this.args[i].checkValid(arr[i + 1])
                 if(failed) {
                     whatIsFailed = this.args[i]
                     break
@@ -91,7 +93,7 @@ module.exports.Command = class Command {
             if(failed) {
                 message.channel.send('명령어의 매개 변수 `' + whatIsFailed.argName + '`가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
             } else {
-                this.action(new CommandContext(this.args))
+                this.action(message, new CommandContext(this.args, arr))
             }
         }
     }
@@ -118,14 +120,14 @@ class CommandArgument {
      * @returns parse the raw data
      */
     parseData(rawData) {
-        return null
+        return rawData
     }
 
 }
 
 module.exports.CommandArgument = CommandArgument
 
-module.exports.BooleanArgument = class BooleanArgument extends this.CommandArgument {
+class BooleanArgument extends this.CommandArgument {
 
     checkValid(rawData) {
         return (rawData === 'true' || rawData === 'false')
@@ -137,7 +139,9 @@ module.exports.BooleanArgument = class BooleanArgument extends this.CommandArgum
 
 }
 
-module.exports.IntArgument = class IntArgument extends this.CommandArgument {
+module.exports.BooleanArgument = BooleanArgument
+
+class IntArgument extends this.CommandArgument {
 
     checkValid(rawData) {
         try {
@@ -153,3 +157,5 @@ module.exports.IntArgument = class IntArgument extends this.CommandArgument {
     }
 
 }
+
+module.exports.IntArgument = IntArgument

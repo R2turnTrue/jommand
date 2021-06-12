@@ -1,12 +1,12 @@
-const { Jommand, Command } = require('../jommand')
-const BooleanArgument = require('../jommand').BooleanArgument
+const { Jommand, Command, BooleanArgument, IntArgument } = require('../jommand')
 const jommand = new Jommand('y!')
 const discord = require('discord.js')
 const client = new discord.Client()
 
 jommand.createCommand(new Command('test', (msg, ctx) => {
-    msg.channel.send('Hello, World! ' + (ctx.parse('arg1') + 1))
-}), new BooleanArgument('arg1'))
+    console.log(ctx.parseArgument('arg1'))
+    msg.channel.send(`boolarg: ${ctx.parseArgument('arg1')}, intarg: ${ctx.parseArgument('arg2')}`)
+}, [new BooleanArgument('arg1'), new IntArgument('arg2')]))
 
 client.on('message', (msg) => {
     jommand.executeCommand(msg)
