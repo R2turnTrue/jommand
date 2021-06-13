@@ -55,6 +55,8 @@ class CommandContext {
 
 }
 
+module.exports.CommandContext = CommandContext
+
 module.exports.Command = class Command {
     /**
      * 
