@@ -1,6 +1,6 @@
 {
   "name": "jommand",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "Jommand - JS Command library with discord.js like discordpy.ext",
   "main": "jommand.js",
   "repository": "https://github.com/NamuTree0345/jommand",

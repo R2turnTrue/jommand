@@ -77,26 +77,30 @@ module.exports.Command = class Command {
      */
     execute(message) {
         let arr = message.content.split(' ')
-        if(this.args.length > arr.length - 1) {
-            message.channel.send('명령어의 매개 변수가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
-        } else {
-            let failed = false
-            let whatIsFailed = new CommandArgument('none')
-            for(let i = 0; i < arr.length; i++) {
-                if(arr[i + 1] === undefined || this.args[i] === undefined) {
-                    break
-                }
-                failed = !this.args[i].checkValid(arr[i + 1])
-                if(failed) {
-                    whatIsFailed = this.args[i]
-                    break
-                }
-            }
-            if(failed) {
-                message.channel.send('명령어의 매개 변수 `' + whatIsFailed.argName + '`가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
+        if(this.args != undefined) {
+            if(this.args.length > arr.length - 1) {
+                message.channel.send('명령어의 매개 변수가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
             } else {
-                this.action(message, new CommandContext(this.args, arr))
+                let failed = false
+                let whatIsFailed = new CommandArgument('none')
+                for(let i = 0; i < arr.length; i++) {
+                    if(arr[i + 1] === undefined || this.args[i] === undefined) {
+                        break
+                    }
+                    failed = !this.args[i].checkValid(arr[i + 1])
+                    if(failed) {
+                        whatIsFailed = this.args[i]
+                        break
+                    }
+                }
+                if(failed) {
+                    message.channel.send('명령어의 매개 변수 `' + whatIsFailed.argName + '`가 잘못되었습니다. 명령어를 다시 확인해 주세요.')
+                } else {
+                    this.action(message, new CommandContext(this.args, arr))
+                }
             }
+        } else {
+            this.action(message, new CommandContext(undefined, undefined))
         }
     }
 }
