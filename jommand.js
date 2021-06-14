@@ -23,8 +23,8 @@ module.exports.Jommand = class Jommand {
      * @param {String} name 
      */
     removeCommand(name) {
-        const idx = a.findIndex(function(item) {return item.name === name}) // findIndex = find + indexOf 
-        if (idx > -1) a.splice(idx, 1)
+        const idx = this.command.findIndex(function(item) {return item.name === name}) // findIndex = find + indexOf 
+        if (idx > -1) this.command.splice(idx, 1)
     }
 
     getCommands() {
